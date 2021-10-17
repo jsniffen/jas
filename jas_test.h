@@ -1,26 +1,30 @@
 // A C testing library.
 // Julian Sniffen, October 2021
-//
-// Fail a test.
-// void jas_fail()
-//
-// Fail a test with a specific message.
-// void jas_tfailf(char *msg, ...)
-//
-// Pass a series of test functions to generate a
-// main function that runs each test in order.
-// void jas_tmain(...)
 
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
+// Test functions should align with this type.
+// e.g. void test_abs_positive() ...
 typedef void(*test_function)(void);
 
-void _jas_test_main(int argv, char **args, ...);
-void _jas_tfailf(char *msg, ...);
+// Fail a test with no message.
 void jas_tfail();
+
+// Fail a test with a specific message.
+//
+// In practice, call this method with no trailing '_'
+// e.g. jas_tfailf("want %d, got %d\n", want, got) ...
+void jas_tfailf_(char *msg, ...);
+
+// Pass a series of test functions to generate a
+// main function that runs each test in order.
+//
+// In practice, call this method with no trailing '_'
+// e.g. jas_tmain(test_abs_positive, test_abs_negative) ...
+void jas_tmain_(int argv, char **args, ...);
 
 static bool success;
 static char error_buffer[512];
@@ -31,8 +35,8 @@ void jas_tfail()
 	success = false;
 }
 
-#define jas_tfailf(msg, ...) _jas_tfailf(__FILE__, __LINE__, msg, __VA_ARGS__)
-void _jas_tfailf(char *file, int line, char *msg, ...)
+#define jas_tfailf(msg, ...) jas_tfailf_(__FILE__, __LINE__, msg, __VA_ARGS__)
+void jas_tfailf_(char *file, int line, char *msg, ...)
 {
 	int w; 
 
@@ -47,8 +51,8 @@ void _jas_tfailf(char *file, int line, char *msg, ...)
 	va_end(ap);
 }
 
-#define jas_tmain(...) void main(int argv, char **args) { _jas_tmain(argv, args, __FILE__, #__VA_ARGS__,  __VA_ARGS__, 0); }
-void _jas_tmain(int argv, char **args, char *file, char *funcs, ...)
+#define jas_tmain(...) void main(int argv, char **args) { jas_tmain_(argv, args, __FILE__, #__VA_ARGS__,  __VA_ARGS__, 0); }
+void jas_tmain_(int argv, char **args, char *file, char *funcs, ...)
 {
 	printf("Running: %s\n", file);
 

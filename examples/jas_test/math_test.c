@@ -7,7 +7,7 @@ void test_abs_positive()
 	want = 10;
 	got = abs(10);
 	if (want != got) {
-		jas_errorf("abs(10) = %d, want %d\n", got, want);
+		jas_tfailf("abs(10) = %d, want %d\n", got, want);
 	}
 }
 
