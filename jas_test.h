@@ -1,30 +1,25 @@
 // A C testing library.
 // Julian Sniffen, October 2021
+//
+// void jas_tfail()
+// Fail a test with no message.
+//
+// void jas_tfailf(char *msg, ...);
+// Fail a test with a specific message.
+//
+// void jas_tmain(char *funcs, ...);
+// Pass a series of test functions to generate a
+// main function that runs each test in order.
 
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
-// Test functions should align with this type.
-// e.g. void test_abs_positive() ...
 typedef void(*test_function)(void);
-
-// Fail a test with no message.
 void jas_tfail();
-
-// Fail a test with a specific message.
-//
-// In practice, call this method with no trailing '_'
-// e.g. jas_tfailf("want %d, got %d\n", want, got) ...
-void jas_tfailf_(char *msg, ...);
-
-// Pass a series of test functions to generate a
-// main function that runs each test in order.
-//
-// In practice, call this method with no trailing '_'
-// e.g. jas_tmain(test_abs_positive, test_abs_negative) ...
-void jas_tmain_(int argv, char **args, ...);
+void jas_tfailf_(char *file, int line, char *msg, ...);
+void jas_tmain_(int argv, char **args, char *file, char *funcs, ...);
 
 static bool success;
 static char error_buffer[512];

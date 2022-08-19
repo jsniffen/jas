@@ -1,9 +1,6 @@
-#include "jas_slice.h"
+#include <stdio.h>
 
-typedef struct {
-	char *name;
-	int age;
-} person;
+#include "jas_slice.h"
 
 int main() {
 	int i;
